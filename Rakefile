@@ -1,36 +1,45 @@
-# frozen_string_literal: true
-
-require 'rubygems'
-
+require 'rake'
 require 'bundler/gem_tasks'
+require 'rubygems/package_task'
+require 'rspec/core/rake_task'
+
 Bundler::GemHelper.install_tasks
 
-app_rakefile_path = File.expand_path('spec/dummy/Rakefile', __dir__)
-
-if File.exist?(app_rakefile_path)
-  APP_RAKEFILE = app_rakefile_path
-  load 'rails/tasks/engine.rake'
-end
-
-require 'rake'
-require 'rdoc/task'
-
-require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new
-task default: ['db:create', 'db:migrate', 'spec']
+task default: [:compile_js, :generate_spec_app, :spec]
 
-Rake::RDocTask.new(:rdoc) do |rdoc|
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title    = 'PaperTrailManager'
-  rdoc.options << '--line-numbers' << '--inline-source'
-  rdoc.rdoc_files.include('README.rdoc')
-  rdoc.rdoc_files.include('lib/**/*.rb')
+task :compile_js do
+  `npm run compile`
 end
 
 task :generate_spec_app do
   sh 'rm -rf spec/dummy'
-  sh 'rails new spec/dummy --skip-bootsnap --skip-bundle --skip-yarn \
-    --skip-git --skip-action-mailer --skip-puma --skip-test --skip-coffee \
-    --skip-spring --skip-listen --skip-turbolinks \
-    --template=spec/app_template.rb'
+  sh *%w[
+    rails new spec/dummy
+    --template=spec/app_template.rb
+    --skip-action-cable
+    --skip-action-mailbox
+    --skip-action-mailer
+    --skip-action-text
+    --skip-active-job
+    --skip-active-storage
+    --skip-asset-pipeline
+    --skip-bootsnap
+    --skip-bundle
+    --skip-git
+    --skip-hotwire
+    --skip-javascript
+    --skip-jbuilder
+    --skip-keeps
+    --skip-listen
+    --skip-spring
+    --skip-sprockets
+    --skip-system-test
+    --skip-test
+    --skip-turbolinks
+    --skip-webpack
+  ]
 end
+
+# ensure fresh js is compiled when packaging the gem
+task build: [:compile_js]
