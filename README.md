@@ -1,5 +1,5 @@
 [![Gem Version](https://badge.fury.io/rb/paper_trail_viewer.svg)](http://badge.fury.io/rb/paper_trail_viewer)
-[![Build Status](https://github.com/jaynetics/paper_trail_viewer/workflows/tests/badge.svg)](https://github.com/jaynetics/paper_trail_viewer/actions)
+[![Build Status](https://github.com/jaynetics/paper_trail_viewer/actions/workflows/tests.yml/badge.svg)](https://github.com/jaynetics/paper_trail_viewer/actions)
 
 # PaperTrailViewer
 
