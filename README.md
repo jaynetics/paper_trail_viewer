@@ -3,21 +3,31 @@
 
 # PaperTrailViewer
 
-Browse changes to records when using Ruby on Rails and the [`paper_trail` gem](https://github.com/paper-trail-gem/paper_trail).
+Browse changes to records when using Ruby on Rails and the [`paper_trail`](https://github.com/paper-trail-gem/paper_trail) gem.
+
+[
+  ![Screenshot thumbnail showing the webapp](
+    https://user-images.githubusercontent.com/10758879/160241794-9b9e9552-722f-48e2-9b1d-9ad463b99020.png
+  )
+](https://user-images.githubusercontent.com/10758879/160241664-fa1a6c08-54f1-4d32-9010-16b501b70f60.png)
 
 ## Installation
 
 Add `paper_trail_viewer` to your bundle and add the following line to your `config/routes.rb`:
 
-    mount PaperTrailViewer::Engine => '/changes'
+```ruby
+mount PaperTrailViewer::Engine => '/changes'
+```
 
 You can pick any path. Restart the server and go to the chosen path to view your versions.
 
-To limit access to this view, do something like:
+To limit access, do something like this:
 
-    authenticate :user, ->*{ |u| u.superadmin? } do
-      mount PaperTrailViewer::Engine => '/changes'
-    end
+```ruby
+authenticate :user, ->*{ |u| u.superadmin? } do
+  mount PaperTrailViewer::Engine => '/changes'
+end
+```
 
 ### Configuration
 
@@ -25,8 +35,10 @@ Put configuration in `config/initializers/paper_trail_viewer.rb`.
 
 E.g. for linking (or not) to the whodunnit user with a custom path helper:
 
-    PaperTrailViewer.user_path_method = :admin_path # default is :user_path
-    PaperTrailViewer.user_path_method = nil # don't link to the user
+```ruby
+PaperTrailViewer.user_path_method = :admin_path # default is :user_path
+PaperTrailViewer.user_path_method = nil # don't link to the user
+```
 
 ## Development
 
@@ -38,7 +50,8 @@ E.g. for linking (or not) to the whodunnit user with a custom path helper:
 
 ### Running tests
 
-* This repo uses the [Appraisal](https://github.com/thoughtbot/appraisal) gem
+This repo uses the [`appraisal`](https://github.com/thoughtbot/appraisal) gem.
+
 * Run `appraisal generate`
 * Run `appraisal install`
 * Run `appraisal rake generate_spec_app`
