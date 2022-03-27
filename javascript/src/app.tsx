@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useState} from "react"
 import {render} from "react-dom"
 import {FieldValues, SubmitHandler, useForm} from "react-hook-form"
-import {Controls, Pagination, VersionsList} from "./components"
+import {ContextMenu, Controls, Pagination, VersionsList} from "./components"
 import {ColumnPicks} from "./types"
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -21,9 +21,10 @@ const App = () => {
     hasNextPage: false,
     versions: [],
   })
-  const config = useConfig(initialParams)
 
-  const submit: SubmitHandler<FieldValues> = (params) => {
+  const submitHandler: SubmitHandler<FieldValues> = (params) => {
+    ContextMenu.closeAll()
+
     // put form params into current URL
     const newURL = new URL(window.location.href.replace(/\?.*/, ""))
     Object.entries(params).forEach(
@@ -40,15 +41,14 @@ const App = () => {
       })
   }
 
-  useEffect(() => submit(initialParams), [initialParams])
+  const submit = handleSubmit(submitHandler)
+  const config = useConfig({initialParams, setValue, submit})
+
+  useEffect(() => submitHandler(initialParams), [initialParams])
 
   return (
-    <div className="p-2">
-      <Controls
-        config={config}
-        onSubmit={handleSubmit(submit)}
-        register={register}
-      />
+    <div className="p-2" onClick={() => ContextMenu.closeAll()}>
+      <Controls config={config} onSubmit={() => submit()} register={register} />
 
       <VersionsList
         config={config}
@@ -60,7 +60,7 @@ const App = () => {
         hasNext={data.hasNextPage}
         onPageChange={(newPage: number) => {
           setValue("page", newPage)
-          handleSubmit(submit)()
+          submit()
         }}
         page={watch("page")}
       />
@@ -82,7 +82,18 @@ const useInitialParamsFromURL = () =>
     }
   }, [])
 
-const useConfig = (initialParams: Record<string, unknown>) => {
+const useConfig = ({
+  initialParams,
+  setValue,
+  submit,
+}: {
+  initialParams: Record<string, unknown>
+  setValue: Function
+  submit: Function
+}) => {
+  const el = document.getElementById("mount-paper-trail-viewer")
+  const allowRollback = el && el.dataset.allowRollback === "1"
+
   const [columns, setColumns] = useState({
     actions: true,
     changes: true,
@@ -96,5 +107,5 @@ const useConfig = (initialParams: Record<string, unknown>) => {
 
   const [viewed, setViewed] = useState([])
 
-  return {columns, setColumns, viewed, setViewed}
+  return {allowRollback, columns, setColumns, viewed, setViewed}
 }

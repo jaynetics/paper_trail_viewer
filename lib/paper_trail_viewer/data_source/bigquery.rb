@@ -1,5 +1,5 @@
 module PaperTrailViewer::DataSource
-  class Bigquery
+  class Bigquery < Base
     def initialize(project_id:, credentials:, table:)
       require 'google/cloud/bigquery'
 
@@ -10,21 +10,22 @@ module PaperTrailViewer::DataSource
       @table = table
     end
 
-    def call(item_type: nil, item_id: nil, event: nil, filter: nil, page: 1, per_page: 50)
+    # @param [PaperTrailViewer::Query]
+    def perform_query(q)
       # https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax
-      bigquery_result = @bigquery.query(<<~SQL, max: per_page)
+      bigquery_result = @bigquery.query(<<~SQL, max: q.per_page)
         SELECT   *
         FROM     `#{@table}`
         # Ignore blank versions that only touch updated_at or untracked fields.
         WHERE    object_changes != ''
-        #{"AND   item_type = '#{item_type}'"        if item_type.present?}
-        #{"AND   item_id = #{item_id}"              if item_id.present?}
-        #{"AND   event = '#{event}'"                if event.present?}
-        #{"AND   object_changes LIKE '%#{filter}%'" if filter.present?}
+        #{"AND   item_type = '#{q.item_type}'"        if q.item_type.present?}
+        #{"AND   item_id = #{q.item_id}"              if q.item_id.present?}
+        #{"AND   event = '#{q.event}'"                if q.event.present?}
+        #{"AND   object_changes LIKE '%#{q.filter}%'" if q.filter.present?}
         ORDER BY created_at DESC, id DESC
         # Paginate via OFFSET.
         # LIMIT must be greater than `max:` or result#next? is always false.
-        LIMIT    #{per_page + 1} OFFSET #{(page - 1) * per_page}
+        LIMIT    #{q.per_page + 1} OFFSET #{(q.page - 1) * q.per_page}
       SQL
 
       Adapter.new(bigquery_result)

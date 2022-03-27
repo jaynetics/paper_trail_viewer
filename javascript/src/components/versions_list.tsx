@@ -1,7 +1,8 @@
-import React, {useCallback} from "react"
-import {Version, stickyStyle, Config, ViewedList} from "../types"
+import React, {useCallback, useState} from "react"
+import {Version, stickyStyle, Config} from "../types"
 import {ChangeDiff} from "./change_diff"
-import {FullObjectModal} from "./full_object_modal"
+import {ContextMenu} from "./context_menu"
+import {VersionContextMenu} from "./version_context_menu"
 
 export const VersionsList: React.FC<{
   config: Config
@@ -12,7 +13,7 @@ export const VersionsList: React.FC<{
 
   if (versions.length === 0) return <Info text="No versions found." />
 
-  const {columns, viewed, setViewed} = config
+  const {columns, viewed} = config
 
   return (
     <table className="table">
@@ -39,7 +40,7 @@ export const VersionsList: React.FC<{
           if (viewed.includes(v.id)) return null
 
           return (
-            <tr key={i} data-ci-type="version-row">
+            <tr key={i} data-ci-type="version-row" data-ci-id={v.id}>
               {columns.version_id && <td>{v.id}</td>}
               {columns.item_type && <td>{v.item_type}</td>}
               {columns.item_id && <td>{v.item_id}</td>}
@@ -47,9 +48,7 @@ export const VersionsList: React.FC<{
               {columns.whodunnit && <TdWhodunnit v={v} />}
               {columns.time && <TdTime v={v} />}
               {columns.changes && <TdChanges v={v} />}
-              {columns.actions && (
-                <TdActions viewed={viewed} setViewed={setViewed} v={v} />
-              )}
+              {columns.actions && <TdActions config={config} v={v} />}
             </tr>
           )
         })}
@@ -96,47 +95,38 @@ const TdChanges = ({v}: {v: Version}) => (
   <td>{v.changeset && <ChangeDiff changeset={v.changeset} />}</td>
 )
 
-const TdActions = ({
-  viewed,
-  setViewed,
-  v,
-}: {
-  viewed: ViewedList
-  setViewed: Function
-  v: Version
-}) => (
-  <td>
-    <div className="d-flex flex-column">
-      <div onClick={() => setViewed([...viewed, v.id])}>
-        <input type="checkbox" checked={false} />
-        &nbsp;
-        <span>Viewed</span>
-      </div>
-      {v.object && <FullObjectModal object={v.object} title="👁️ Before" />}
-      {v.changeset && (
-        <FullObjectModal
-          object={merge(v.object, v.changeset)}
-          title="👁️ After"
-        />
-      )}
-      {v.item_url && (
-        <a href={v.item_url} style={{textDecoration: "none"}} target="_blank">
-          ↗️ See live
-        </a>
-      )}
-    </div>
-  </td>
-)
+const TdActions = ({config, v}: {config: Config; v: Version}) => {
+  const [menuCoords, setMenuCoords] = useState<null | [number, number]>(null)
+  const showMenu = useCallback(
+    (event: React.MouseEvent) => {
+      event.preventDefault()
+      ContextMenu.closeAll()
+      setMenuCoords([event.clientX, event.clientY])
+    },
+    [setMenuCoords]
+  )
+
+  return (
+    <td>
+      <button
+        className="btn btn-outline-secondary rounded-circle px-3"
+        data-ci-type="version-action-button"
+        onClick={showMenu}
+      >
+        ⋮
+      </button>
+
+      <VersionContextMenu
+        config={config}
+        coords={menuCoords}
+        setCoords={setMenuCoords}
+        version={v}
+      />
+    </td>
+  )
+}
 
 const truncate = (str: string, len: number) => {
   if (!str || str.length <= len) return str
   return str.substring(0, len) + "…"
-}
-
-const merge = (object: Version["object"], changeset: Version["changeset"]) => {
-  const newState = {...object}
-  Object.entries(changeset).forEach(([k, [_, newValue]]) => {
-    newState[k] = newValue
-  })
-  return newState
 }

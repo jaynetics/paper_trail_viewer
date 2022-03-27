@@ -40,6 +40,11 @@ PaperTrailViewer.user_path_method = :admin_path # default is :user_path
 PaperTrailViewer.user_path_method = nil # don't link to the user
 ```
 
+Other options are:
+
+- `PaperTrailViewer.allow_rollback` (default is `true`)
+- `PaperTrailViewer.data_source` (default is `ActiveRecord`)
+
 ## Development
 
 ### Setup
