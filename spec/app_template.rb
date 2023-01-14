@@ -1,4 +1,4 @@
-gem 'paper_trail_viewer', path: __FILE__ + '/../../../'
+gem 'paper_trail_viewer', path: __dir__ + '/../'
 
 generate 'paper_trail:install'
 generate 'resource', 'entity name:string status:string --no-test-framework'
