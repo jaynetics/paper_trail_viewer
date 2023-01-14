@@ -9,7 +9,7 @@ RSpec::Core::RakeTask.new
 task default: [:compile_js, :generate_spec_app, :spec]
 
 task :compile_js do
-  `npm run compile`
+  sh 'npm run compile'
 end
 
 task :generate_spec_app do
