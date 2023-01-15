@@ -92,7 +92,7 @@ const useConfig = ({
   submit: Function
 }) => {
   const el = document.getElementById("mount-paper-trail-viewer")
-  const allowRollback = el && el.dataset.allowRollback === "1"
+  const allowRollback = !!el && el.dataset.allowRollback === "1"
 
   const [columns, setColumns] = useState({
     actions: true,
@@ -105,7 +105,7 @@ const useConfig = ({
     whodunnit: true,
   } as ColumnPicks)
 
-  const [viewed, setViewed] = useState([])
+  const [viewed, setViewed] = useState(new Array<number>())
 
   return {allowRollback, columns, setColumns, viewed, setViewed}
 }

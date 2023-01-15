@@ -5,7 +5,7 @@ import {ConfigModal} from "./config_modal"
 export const Controls: React.FC<{
   register: (
     x: "page" | "filter" | "event" | "item_id" | "item_type" | "per_page"
-  ) => void
+  ) => object
   onSubmit: React.FormEventHandler<HTMLFormElement>
   config: Config
 }> = ({register, onSubmit, config}) => (
