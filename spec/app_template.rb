@@ -5,6 +5,8 @@ generate 'resource', 'entity name:string status:string --no-test-framework'
 generate 'resource', 'platform name:string status:string --no-test-framework'
 
 model_body = <<-RUBY
+  ::ActiveRecord.try(:use_yaml_unsafe_load=, true)
+
   has_paper_trail
 
   validates_presence_of :name

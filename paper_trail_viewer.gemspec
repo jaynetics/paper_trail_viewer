@@ -16,18 +16,18 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
-  spec.required_ruby_version = '>= 2.7'
+  spec.required_ruby_version = '>= 3.0'
 
   spec.add_dependency 'kaminari'
+  spec.add_dependency 'ostruct'
   spec.add_dependency 'paper_trail', ['>= 11.1']
   spec.add_dependency 'rails', ['>= 6.0', '< 8.0']
 
-  spec.add_development_dependency 'appraisal', '~> 1.0'
   spec.add_development_dependency 'capybara', '~> 3.0'
   spec.add_development_dependency 'factory_bot_rails', '~> 6.0'
-  spec.add_development_dependency 'puma', '~> 5.0'
+  spec.add_development_dependency 'puma', '~> 6.0'
   spec.add_development_dependency 'rake', '~> 13.0'
-  spec.add_development_dependency 'rspec-rails', '~> 5.0'
-  spec.add_development_dependency 'sqlite3', '>= 1.3.6'
-  spec.add_development_dependency 'webdrivers', '~> 5.0'
+  spec.add_development_dependency 'rspec-rails', '~> 6.0'
+  spec.add_development_dependency 'selenium-webdriver', '~> 4.22'
+  spec.add_development_dependency 'sqlite3', '~> 1.4'
 end

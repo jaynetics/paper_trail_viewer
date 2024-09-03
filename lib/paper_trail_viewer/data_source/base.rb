@@ -1,4 +1,5 @@
 require 'kaminari'
+require 'ostruct'
 
 module PaperTrailViewer
   module DataSource

@@ -44,7 +44,7 @@ const App = () => {
   const submit = handleSubmit(submitHandler)
   const config = useConfig({initialParams, setValue, submit})
 
-  useEffect(() => submitHandler(initialParams), [initialParams])
+  useEffect(() => void submitHandler(initialParams), [initialParams])
 
   return (
     <div className="p-2" onClick={() => ContextMenu.closeAll()}>

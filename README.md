@@ -55,12 +55,7 @@ Other options are:
 
 ### Running tests
 
-This repo uses the [`appraisal`](https://github.com/thoughtbot/appraisal) gem.
-
-* Run `appraisal generate`
-* Run `appraisal install`
-* Run `appraisal rake generate_spec_app`
-* Run `appraisal rake`
+`bundle exec rake`
 
 ## License
 
