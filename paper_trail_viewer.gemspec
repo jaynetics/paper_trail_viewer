@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'kaminari'
   spec.add_dependency 'ostruct'
   spec.add_dependency 'paper_trail', ['>= 11.1']
-  spec.add_dependency 'rails', ['>= 6.0', '< 8.0']
+  spec.add_dependency 'rails', ['>= 6.0', '< 9.0']
 
   spec.add_development_dependency 'capybara', '~> 3.0'
   spec.add_development_dependency 'factory_bot_rails', '~> 6.0'
